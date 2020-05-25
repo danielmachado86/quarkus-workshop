@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Random;
 
+import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @ApplicationScoped
@@ -102,11 +103,35 @@ public class FightService {
         return fighters;
     }
 
+    @Fallback(fallbackMethod = "fallbackRandomHero")
     private Hero findRandomHero() {
         return heroService.findRandomHero();
     }
 
+    @Fallback(fallbackMethod = "fallbackRandomVillain")
     private Villain findRandomVillain() {
         return villainService.findRandomVillain();
     }
+
+    public Hero fallbackRandomHero() {
+        LOGGER.warn("Falling back on hero");
+        Hero hero = new Hero();
+        hero.name = "Fallback hero";
+        hero.picture = "https://dummyimage.com/280x380/1e8fff/ffffff&text=Fallback+Hero";
+        hero.powers = "Fallback hero powers";
+        hero.level = 1;
+        return hero;
+    }
+
+    public Villain fallbackRandomVillain(){
+        LOGGER.warn("Falling back on villain");
+        Villain villain = new Villain();
+        villain.name = "Fallback villain";
+        villain.picture = "https://dummyimage.com/280x380/b22222/ffffff&text=Fallback+Villain";
+        villain.powers = "Fallback villain powers";
+        villain.level = 2;
+        return villain;
+    }
+
+
 }
