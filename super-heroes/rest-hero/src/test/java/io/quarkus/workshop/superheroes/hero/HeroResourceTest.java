@@ -219,4 +219,20 @@ public class HeroResourceTest {
             .then()
             .statusCode(OK.getStatusCode());
     }
+
+    @Test
+    void shouldPingLiveness() {
+        given()
+            .when().get("/health/ready")
+            .then()
+            .statusCode(OK.getStatusCode());
+    }
+
+    @Test
+    void shouldPingReadiness() {
+        given()
+            .when().get("/health/ready")
+            .then()
+            .statusCode(OK.getStatusCode());
+    }
 }
