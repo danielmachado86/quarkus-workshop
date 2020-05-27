@@ -19,32 +19,41 @@ import java.util.List;
 import java.util.Random;
 
 import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @ApplicationScoped
 @Transactional(SUPPORTS)
 public class FightService {
-
+    
     private static final Logger LOGGER = Logger.getLogger(FightService.class);
     
     private final Random random = new Random();
 
+    @Inject
+    @RestClient
+    HeroService heroService;
+
+    @Inject
+    @RestClient
+    VillainService villainService;
+    
     public List<Fight> findAllFights() {
         return Fight.listAll();
     }
-
+    
     public Fight findFightById(Long id) {
         return Fight.findById(id);
     }
-
+    
     @Transactional(REQUIRED)
     public Fight persistFight(Fighters fighters) {
         
         Fight fight;
-
+        
         int heroAdjust = random.nextInt(20);
         int villainAdjust = random.nextInt(20);
-
+        
         if ((fighters.hero.level + heroAdjust) > (fighters.villain.level + villainAdjust)){
             fight = heroWon(fighters);
         } else if (fighters.hero.level < fighters.villain.level) {
@@ -52,12 +61,12 @@ public class FightService {
         } else {
             fight = random.nextBoolean() ? heroWon(fighters) : villainWon(fighters);
         }
-
+        
         fight.fightDate = Instant.now();
         fight.persist();
         return fight;
     }
-
+    
     private Fight heroWon(Fighters fighters) {
         LOGGER.info("Yes, Hero won :o)");
         Fight fight = new Fight();
@@ -86,14 +95,6 @@ public class FightService {
         return fight;
     }
 
-    @Inject
-    @RestClient
-    HeroService heroService;
-
-    @Inject
-    @RestClient
-    VillainService villainService;
-
     public Fighters findRandomFighters() {
         Hero hero = findRandomHero();
         Villain villain = findRandomVillain();
@@ -103,12 +104,13 @@ public class FightService {
         return fighters;
     }
 
-    @Fallback(fallbackMethod = "fallbackRandomHero")
+    @Fallback(fallbackMethod="fallbackRandomHero")
     private Hero findRandomHero() {
         return heroService.findRandomHero();
     }
 
-    @Fallback(fallbackMethod = "fallbackRandomVillain")
+
+    @Fallback(fallbackMethod="fallbackRandomVillain")
     private Villain findRandomVillain() {
         return villainService.findRandomVillain();
     }
