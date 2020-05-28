@@ -10,6 +10,8 @@ import io.quarkus.workshop.superheroes.fight.client.Hero;
 import io.quarkus.workshop.superheroes.fight.client.HeroService;
 import io.quarkus.workshop.superheroes.fight.client.Villain;
 import io.quarkus.workshop.superheroes.fight.client.VillainService;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import static javax.transaction.Transactional.TxType.REQUIRED;
 import static javax.transaction.Transactional.TxType.SUPPORTS;
@@ -28,6 +30,9 @@ public class FightService {
     private static final Logger LOGGER = Logger.getLogger(FightService.class);
     
     private final Random random = new Random();
+
+    @Inject
+    @Channel("fights") Emitter<Fight> emmiter;
 
     @Inject
     @RestClient
@@ -63,6 +68,7 @@ public class FightService {
         
         fight.fightDate = Instant.now();
         fight.persist();
+        emmiter.send(fight);
         return fight;
     }
     
