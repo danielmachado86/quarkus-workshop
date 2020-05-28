@@ -1,5 +1,8 @@
 package io.quarkus.workshop.superheroes.hero;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -34,6 +37,8 @@ public class HeroResource {
 
     @Operation(summary = "Returns a randon hero")
     @APIResponse(responseCode = "200", content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(description = "The hero fighting against the villain", implementation = Hero.class, required = true)))
+    @Counted(name = "countGetRandomHero", description = "Counts how many times the getRandomHero method has been invoked")
+    @Timed(name = "timeGetRandomHero", description = "Times how long it takes to invoke the getRandomHero method", unit = MetricUnits.MILLISECONDS)
     @GET
     @Path("/random")
     public Response getRandomHero(){
@@ -45,8 +50,10 @@ public class HeroResource {
     @Operation(summary = "Returns all the heroes from the database")
     @APIResponse(responseCode = "200", content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Hero.class, type = SchemaType.ARRAY)))
     @APIResponse(responseCode = "204", description = "No heroes")
+    @Counted(name = "countGetAllHeroes", description = "Counts how many times the getAllHeroes method has been invoked")
+    @Timed(name = "timeGetAllHeroes", description = "Times how long it takes to invoke the getAllHeroes method", unit = MetricUnits.MILLISECONDS)
     @GET
-    public Response GetAllHeroes(){
+    public Response getAllHeroes(){
         List<Hero> heroes = service.FindAllHeroes();
         LOGGER.debug("Total number of heroes " + heroes);
         return Response.ok(heroes).build();
@@ -55,6 +62,8 @@ public class HeroResource {
     @Operation(summary = "Returns a hero for a given identifier")
     @APIResponse(responseCode = "200", content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Hero.class)))
     @APIResponse(responseCode = "204", description = "The hero is not found for a given identifier")
+    @Counted(name = "countGetHero", description = "Counts how many times the getHero method has been invoked")
+    @Timed(name = "timeGetHero", description = "Times how long it takes to invoke the getHero method", unit = MetricUnits.MILLISECONDS)
     @GET
     @Path("/{id}")
     public Response getHero(
@@ -73,6 +82,8 @@ public class HeroResource {
 
     @Operation(summary = "Creates a valid hero")
     @APIResponse(responseCode = "201", description = "The URI of the created hero", content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = URI.class)))
+    @Counted(name = "countCreateHero", description = "Counts how many times the createHero method has been invoked")
+    @Timed(name = "timeCreateHero", description = "Times how long it takes to invoke the createHero method", unit = MetricUnits.MILLISECONDS)
     @POST
     public Response createHero(
         @RequestBody(required = true, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Hero.class)))
@@ -85,6 +96,8 @@ public class HeroResource {
 
     @Operation(summary = "Updates an existing hero")
     @APIResponse(responseCode = "200", description = "The updated hero", content = @Content(mediaType  = APPLICATION_JSON, schema = @Schema(implementation = Hero.class)))
+    @Counted(name = "countUpdateHero", description = "Counts how many times the updateHero method has been invoked")
+    @Timed(name = "timeUpdateHero", description = "Times how long it takes to invoke the updateHero method", unit = MetricUnits.MILLISECONDS)
     @PUT
     public Response updateHero(
         @RequestBody(required = true, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Hero.class)))
@@ -96,6 +109,8 @@ public class HeroResource {
 
     @Operation(summary = "Deletes an existing hero")
     @APIResponse(responseCode = "204")
+    @Counted(name = "countDeleteHero", description = "Counts how many times the deleteHero method has been invoked")
+    @Timed(name = "timeDeleteHero", description = "Times how long it takes to invoke the deleteHero method", unit = MetricUnits.MILLISECONDS)
     @DELETE
     @Path("/{id}")
     public Response deleteHero(
@@ -106,6 +121,8 @@ public class HeroResource {
         return Response.noContent().build();
     }
 
+    @Counted(name = "countHello", description = "Counts how many times the hello method has been invoked")
+    @Timed(name = "timeHello", description = "Times how long it takes to invoke the hello method", unit = MetricUnits.MILLISECONDS)
     @GET
     @Produces(TEXT_PLAIN)
     @Path("/hello")

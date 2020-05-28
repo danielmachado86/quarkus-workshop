@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.eclipse.microprofile.faulttolerance.Fallback;
-import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @ApplicationScoped
