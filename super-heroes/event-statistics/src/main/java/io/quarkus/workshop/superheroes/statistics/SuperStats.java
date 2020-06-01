@@ -34,7 +34,7 @@ public class SuperStats {
             // Create a sub-stream per hero and villain - for each winner, we get a new sub-stream
             .groupBy(FightResult::getWinnerName)
             // For each of these sub-stream
-            .map(group ->
+            .flatMap(group ->
                 // Compute the new score (increment the score by one)
                 group.scan(0, (i, s) -> i + 1)
                     // Skip the initial 0, oddity of the scan operator

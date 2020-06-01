@@ -18,6 +18,10 @@ public class FightResult {
     private String winnerTeam;
     private String loserTeam;
 
+    // public long getId() {
+    //     return id;
+    // }
+
     public String getWinnerName() {
         return winnerName;
     }
