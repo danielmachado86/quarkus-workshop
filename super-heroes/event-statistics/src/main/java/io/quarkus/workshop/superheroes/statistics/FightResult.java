@@ -18,15 +18,45 @@ public class FightResult {
     private String winnerTeam;
     private String loserTeam;
 
-    // public long getId() {
-    //     return id;
-    // }
+
+    public long getId() {
+        return id;
+    }
+
+    public Instant getFightDate() {
+        return fightDate;
+    }
 
     public String getWinnerName() {
         return winnerName;
     }
 
+    public int getWinnerLevel() {
+        return winnerLevel;
+    }
+
+    public String getWinnerPicture() {
+        return winnerPicture;
+    }
+
+    public String getLoserName() {
+        return loserName;
+    }
+
+    public int getLoserLevel() {
+        return loserLevel;
+    }
+
+    public String getLoserPicture() {
+        return loserPicture;
+    }
+    
+
     public String getWinnerTeam() {
         return winnerTeam;
+    }
+
+    public String getLoserTeam() {
+        return loserTeam;
     }
 }
